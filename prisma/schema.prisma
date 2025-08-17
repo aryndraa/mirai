@@ -22,10 +22,8 @@ enum PIORITY {
 }
 
 model User {
-  id Int @id @default(autoincrement())
-  name String
-  email String @unique
-  password String
+  id String @id @default(cuid())
+  userId String @unique // For clerk
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Todos Todo[]
@@ -38,5 +36,5 @@ model Todo {
   estimation DateTime
   priority PIORITY
   user User @relation(fields: [userId], references: [id])
-  userId Int
+  userId String
 }
