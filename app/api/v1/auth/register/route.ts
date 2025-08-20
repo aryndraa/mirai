@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import { clerkClient } from "@clerk/nextjs/server";
-import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
