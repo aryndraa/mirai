@@ -1,26 +1,21 @@
 import { prisma } from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
+import { auth, getAuth } from "@clerk/nextjs/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: Request) {
-    const { userId } = await auth();
-    if (!userId) return new Response("Unathorized", { status: 401 });
+export async function GET(request: NextRequest) {
+  const { userId } = getAuth(request);
+  if (!userId)
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 
-    const user = await prisma.user.findUnique({
-        where: {
-            userId
-        }
-    })
+  const todos = await prisma.todo.findMany({
+    where: { userId },
+  });
 
-    if (!user) return new Response("Unathorized", { status: 401 });
+  return NextResponse.json({ todos: todos }, { status: 200 });
+}
 
-    const todos = await prisma.todo.findMany({
-        where: {
-            userId: user.id
-        }
-    })
-
-    return new Response(JSON.stringify({ data: todos }), {
-        status: 200,
-        headers: { 'content-type': 'application/json' }
-    })
+export async function POST(request: NextRequest) {
+  const { userId } = getAuth(request);
+  if (!userId)
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 }

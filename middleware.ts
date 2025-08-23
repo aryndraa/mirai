@@ -1,6 +1,12 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-export default clerkMiddleware();
+const isPublicRoutes = createRouteMatcher(['/', '/api/v1/(.*)']);
+
+export default clerkMiddleware(async (auth, request) => {
+  if (!isPublicRoutes(request)) {
+    await auth.protect({ token: "any" });
+  }
+});
 
 export const config = {
   matcher: [
